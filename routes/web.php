@@ -24,6 +24,9 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::resource('/roles', RoleController::class);
     Route::resource('/stocks', StocksController::class);
     Route::resource('/files', FilesController::class);
+    Route::get('/file/user', [FilesController::class, 'getFilesByUser'])->name('files.user');
+    Route::get('/file/mine', [FilesController::class, 'getMyFiles'])->name('files.mine');
+    Route::post('/file/upload', [FilesController::class, 'uploadFile'])->name('files.upload');
 });
 
 Route::post('/users/delete', [UserController::class, 'deleteMultiple'])->name('users.delete');

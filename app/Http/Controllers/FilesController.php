@@ -80,16 +80,44 @@ class FilesController extends Controller
     
     public function destroy(string $id)
     {
-        Product::destroy($id);
+        // Product::destroy($id);
 
-        return back()->with('delete', 'Product has been deleted!');
+        // return back()->with('delete', 'Product has been deleted!');
     }
 
     public function deleteMultiple(Request $request)
     {
-        $productIds = $request->input('ids');
-        Product::whereIn('id', $productIds)->delete();
+        // $productIds = $request->input('ids');
+        // Product::whereIn('id', $productIds)->delete();
 
-        return redirect()->route('products.index')->with('success', 'Operation successfully!');
+        // return redirect()->route('products.index')->with('success', 'Operation successfully!');
+    }
+
+    public function getFilesByUserID($id) {
+        return Files::where('user_id', $id)->paginate(50);
+    }
+
+    public function getFilesByUser(Request $request) {
+        $id = $request->input('id');
+        $files = $this->getFilesByUserID($id);
+        return Inertia::render('Files/List', compact('files'));
+    }
+
+    public function getMyFiles(Request $request) {
+        $user = $request->user();
+        $files = $this->getFilesByUserID($user->id);
+        return Inertia::render('Files/List', compact('files'));
+    }
+
+    public function uploadFile(Request $request) {
+        $data = new Files();
+        $data->user_id = $request->user()->id;
+        $data->status = 'unread';
+        if ($request->hasFile('file')) {
+            $avatarPath = $request->file('file')->store('public/excel_files');
+            $data->file_name = $avatarPath;
+        }
+        $data->save();
+        return redirect()->route('files.mine')->with('success', 'File uploaded!');
     }
 }
