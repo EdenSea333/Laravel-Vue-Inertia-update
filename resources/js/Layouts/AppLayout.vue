@@ -48,28 +48,38 @@ const logout = () => {
                                 <!-- <h1 style="color:Blue; font-size:30px">Admin Page</h1> -->
                             </div>
 
+                            <template v-if="$page.props.auth.user.role_id==1">
+
                             <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
-                                </NavLink>
-                                <NavLink :href="route('users.index')" :active="route().current('users.index')">
-                                    Users
-                                </NavLink>
-                                <NavLink :href="route('roles.index')" :active="route().current('roles.index')">
-                                    Roles
-                                </NavLink >
-                                <NavLink :href="route('products.index')" :active="route().current('products.index')">
-                                    Products List
-                                </NavLink>
-                                <NavLink :href="route('files.index')" :active="route().current('files.index')">
-                                    File List
-                                </NavLink>
-                                <NavLink :href="route('stocks.index')" :active="route().current('stocks.index')">
-                                    Comprehensive Table
-                                </NavLink>
-                                
-                            </div>
+                                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                                    <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
+                                        Dashboard
+                                    </NavLink>
+                                    <NavLink :href="route('users.index')" :active="route().current('users.index')">
+                                        Users
+                                    </NavLink>
+                                    <NavLink :href="route('roles.index')" :active="route().current('roles.index')">
+                                        Roles
+                                    </NavLink >
+                                    <NavLink :href="route('products.index')" :active="route().current('products.index')">
+                                        Products List
+                                    </NavLink>
+                                    <NavLink :href="route('files.index')" :active="route().current('files.index')">
+                                        File List
+                                    </NavLink>
+                                    <NavLink :href="route('stocks.index')" :active="route().current('stocks.index')">
+                                        Comprehensive Table
+                                    </NavLink>
+                                    
+                                </div>
+                            </template>
+                            <template v-else>
+                                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                                    <NavLink :href="route('files.mine')" :active="route().current('files.mine')">
+                                        File List
+                                    </NavLink>
+                                </div>
+                            </template>
                         </div>
 
                         <div class="hidden sm:flex sm:items-center sm:ml-6">

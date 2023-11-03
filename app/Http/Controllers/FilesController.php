@@ -122,8 +122,9 @@ class FilesController extends Controller
         $data->user_id = $request->user()->id;
         $data->status = 'unread';
         if ($request->hasFile('file')) {
-            $avatarPath = $request->file('file')->store('public/excel_files');
-            $data->file_name = $avatarPath;
+            $file = $request->file('file');
+            $avatarPath = $file->store('public/excel_files');
+            $data->file_name = $file->hashName();
         }
         $data->save();
         return redirect()->route('files.mine')->with('success', 'File uploaded!');

@@ -8,6 +8,7 @@ use App\Http\Controllers\StocksController;
 use App\Http\Controllers\FilesController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -35,7 +36,11 @@ Route::post('/users/delete', [UserController::class, 'deleteMultiple'])->name('u
 Route::post('/products/delete', [ProductsController::class, 'deleteMultiple'])->name('products.delete');
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
+    Route::get('/dashboard', function (Request $request) {
+        $user = $request->user();
+        if ($user->isAdmin())
+            return Inertia::render('Dashboard');
+        else
+            return redirect()->route('files.mine');
     })->name('dashboard');
 });
