@@ -77,12 +77,12 @@ class StocksController extends Controller
     // /**
     //  * Update the specified resource in storage.
     //  */
-    // public function update(Request $request, string $id)
-    // {
-    //     User::where('id', $id)->update($request->all());
+     public function update(Request $request, string $id)
+    {
+        File::where('id', $id)->update($request->all());
 
-    //     return redirect('/users')->with('success', 'User has been updated!');
-    // }
+        return redirect('/stocks')->with('success', 'User has been updated!');
+    }
 
     // /**
     //  * Remove the specified resource from storage.

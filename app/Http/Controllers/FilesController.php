@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductStoreRequest;
 use App\Models\Files;
+use App\Imports\StockList;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Arr;
 
 class FilesController extends Controller
 {
@@ -25,62 +29,55 @@ class FilesController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        $capacityUnits = CapacityUnit::all();
-        $categories = Category::all();
-        return Inertia::render('Products/Create', compact('capacityUnits', 'categories'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(ProductStoreRequest $request)
-    {
-        $validatedData = $request->validated();
-        Product::create($validatedData);
-
-        return redirect()->route('products.index')->with('success', 'Product has been created!');
-    }
-
-    /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        $getProduct = Product::findOrFail($id);
+        $file = Files::findOrFail($id);
+        $filePath = storage_path('app/public/excel_files/'.$file->file_name);
+        $rows = Excel::toArray(new StockList(), $filePath)[0];
+        $header = [
+            "#", "Product", "Grade", "Vat Type", "Qty", "Offer", "Total"
+        ];
+        $offset = array_search(Arr::first($rows, function($row) {
+            return $row[0] == "#" &&
+                $row[1] == "Product" &&
+                $row[2] == "Grade" &&
+                $row[3] == "Vat Type" &&
+                $row[4] == "Qty" &&
+                $row[5] == "Offer" &&
+                $row[6] == "Total";
+        }), $rows);
+        $rows = array_map(fn($row) => [
+                "no" => $row[0],
+                "product" => $row[1],
+                "grade" => $row[2],
+                "vat_type" => $row[3],
+                "qty" => $row[4],
+                "offer" => $row[5],
+                "mapped" => ''
+            ], array_filter(array_slice($rows, $offset + 1), function($row) {
+                return $row[1] != null;
+            }));
 
-        return Inertia::render('Products/Show', compact('getProduct'));
+        $products = Product::all()->toArray();
+
+        $mapping_list = [];
+        foreach($rows as $ix => $row){
+            foreach($products as $product){
+                if (strstr($row['product'], $product['brand']) && strstr($row['product'], $product['model']) && strstr($row['product'], $product['color']) ) {// && strstr( $row['product'], $product['capacity']) && strstr($row['product'], $product['capacity_unit'])
+                    $mapping_list[] =  [
+                        "id" => $row['no'],
+                        "product" => $product['brand'] . ' ' . $product['model'] . ' ' . $product['color']
+                    ];
+                    $rows[$ix]['mapped'] = $product['brand'] . ' ' . $product['model'] . ' ' . $product['color'];
+                    break;
+                }
+            }
+        }
+        return Inertia::render('Files/Show', compact('rows', 'file'));
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        
-        $capacityUnits = CapacityUnit::all();
-        $categories = Category::all();
-        $product = Product::findOrFail($id);
-        ray($categories);
-        return Inertia::render('Products/Edit', compact('product', 'capacityUnits', 'categories'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        Product::where('id', $id)->update($request->all());
-
-        return redirect('/products')->with('success', 'Product has been updated!');
-    }
-
-    // /**
-    //  * Remove the specified resource from storage.
-    //  */
+    
     public function destroy(string $id)
     {
         Product::destroy($id);

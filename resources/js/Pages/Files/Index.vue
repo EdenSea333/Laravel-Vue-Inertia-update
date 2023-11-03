@@ -7,12 +7,12 @@
 					Files
 					<i class="fa-regular fa-file-excel"></i>
 				</p>
-
+<!-- 
 				<inertia-link href="products/create">
 					<a
 						class="px-4 py-2 mr-3 text-sm text-green-600 transition border border-green-300 rounded-full hover:bg-green-600 hover:text-white hover:border-transparent">Create
 					Files</a>
-				</inertia-link>
+				</inertia-link> -->
 
 			</h2>
 		</template>
@@ -90,26 +90,22 @@
 										{{ file.id }}
 									</div>
 								</td> -->
-								<!-- <td class="px-6 py-4 whitespace-nowrap">
-									<div class="flex items-center justify-center">
-										<div class="ml-4">
-											<div class="text-sm font-medium text-gray-900" >
-												<inertia-link class="transition hover:text-blue-500"
-													:href="`products/${file.id}`">{{ product.brand }}</inertia-link>
-											</div>
-										</div>
-									</div>
-								</td> -->
+								
 								<td class="px-6 py-4 whitespace-nowrap">
 									<div class="text-sm text-center text-gray-900 ">
 										<span>{{ file.user.name }}</span>
 									</div>
 								</td>
 								<td class="px-6 py-4 text-center whitespace-nowrap">
-									<span
-										class="inline-flex px-2 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full">
-										{{ file.file_name }}
-									</span>
+									<div class="flex items-center justify-center">
+
+										<div class="ml-4">
+											<div class="text-sm font-medium text-gray-900">
+												<inertia-link class="transition hover:text-blue-500"
+													:href="`files/${file.id}`">{{ file.file_name }}</inertia-link>
+											</div>
+										</div>
+									</div>
 								</td>
 								<td class="px-6 py-4 text-center whitespace-nowrap">
 									<span
@@ -126,14 +122,9 @@
 								
 								<td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
 
-									<a href="#" @click="deleteProduct(product)"
-										class="float-left px-4 py-2 ml-2 text-red-400 duration-100 rounded hover:text-red-600">
-										<svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
-											viewBox="0 0 24 24" stroke="currentColor">
-											<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-												d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-										</svg>
-									</a>
+									<inertia-link :href="`/stocks/${file.id}/update`"
+										class="float-left px-4 py-2 text-white bg-blue-900 duration-100 rounded hover:text-green-600">
+										MATCH</inertia-link>
 
 								</td>
 							</tr>

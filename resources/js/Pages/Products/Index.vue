@@ -63,11 +63,11 @@
 								</th> -->
 								<th scope="col"
 									class="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-500 uppercase">
-									<div style="width: 100px;">Brand</div>
+									<div style="width: 80px;">Brand</div>
 								</th>
 								<th scope="col"
 									class="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-500 uppercase">
-									<div style="width: 100px; ">Model</div>
+									<div style="width: 200px; ">Model</div>
 								</th>
 								<th scope="col"
 									class="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-500 uppercase">
@@ -104,7 +104,7 @@
 								<td class="px-6 py-4 whitespace-nowrap">
 									<div class="flex items-center justify-center">
 										<div class="ml-4">
-											<div class="text-sm font-medium text-gray-900" style="width: 100px; overflow:hidden;">
+											<div class="text-sm font-medium text-gray-900" style="width: 100px; overflow:auto;">
 												<inertia-link class="transition hover:text-blue-500"
 													:href="`products/${product.id}`">{{ product.brand }}</inertia-link>
 											</div>
@@ -112,7 +112,7 @@
 									</div>
 								</td>
 								<td class="px-6 py-4 whitespace-nowrap">
-									<div class="text-sm text-center text-gray-900 " style="width: 100px; overflow:hidden">
+									<div class="text-sm text-center text-gray-900 " style="width: 200px; overflow:auto;">
 										<span>{{ product.model }}</span>
 									</div>
 								</td>

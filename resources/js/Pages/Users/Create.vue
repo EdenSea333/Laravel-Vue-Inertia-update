@@ -46,10 +46,12 @@
 
                         <div class="mb-4">
                             <div class="mb-3 xl:w-96">
-                                <select disabled v-model="form.role_id"
+                                <select v-model="form.role"
                                     class="block m-0 text-base font-normal text-gray-700 ease-in-out bg-white bg-no-repeat border border-gray-300 border-solid rounded appearance-none form-select bg-clip-padding focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"
                                     aria-label="Default select example">
-                                    <option value="2">Subscriber</option>
+                                    <option v-for="role in roles" :key="role.id" :value="role.id">
+                                        {{ role.name }} 
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -97,13 +99,14 @@ export default {
     },
     props: {
         errors: Object,
+        roles: Object,
     },
     data() {
         return {
             form: this.$inertia.form({
                 name: '',
                 email: '',
-                role_id: 2,
+                role_id: '',
                 password: '',
                 avatar: null,
                 description: ''

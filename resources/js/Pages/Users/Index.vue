@@ -92,11 +92,11 @@
 									<input type="checkbox" v-model="selectedUsers" :value="user.id"
 										class="ml-5 outline-none" />
 								</td>
-								<td class="px-6 py-4 whitespace-nowrap">
+								<!-- <td class="px-6 py-4 whitespace-nowrap">
 									<div class="text-sm text-center text-gray-900">
 										{{ user.id }}
 									</div>
-								</td>
+								</td> -->
 								<td>
 									<img class="w-10 h-10 mx-auto rounded-full"
 										:src="user.avatar != 'placeholder' ? user.avatar : $page.props.avatar"
@@ -115,7 +115,7 @@
 								</td>
 								<td class="px-6 py-4 whitespace-nowrap">
 									<div class="text-sm text-center text-gray-900">
-										<a :href="'mailto:' + user.email">{{ user.email }}</a>
+										{{ user.email }}
 									</div>
 								</td>
 								<td class="px-6 py-4 whitespace-nowrap">

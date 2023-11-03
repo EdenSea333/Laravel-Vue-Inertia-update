@@ -66,7 +66,7 @@ const logout = () => {
                                     File List
                                 </NavLink>
                                 <NavLink :href="route('stocks.index')" :active="route().current('stocks.index')">
-                                    Stock List
+                                    Comprehensive Table
                                 </NavLink>
                                 
                             </div>

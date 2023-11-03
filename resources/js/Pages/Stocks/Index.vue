@@ -61,27 +61,31 @@
 								<th scope="col"></th>
 								<th scope="col"
 									class="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-500 uppercase">
-									ID
+									brand
 								</th>
 								<th scope="col"
 									class="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-500 uppercase">
-									Avatar
+									model
 								</th>
 								<th scope="col"
 									class="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-500 uppercase">
-									Name
+									Colour
 								</th>
 								<th scope="col"
 									class="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-500 uppercase">
-									Email
+									capacity
 								</th>
 								<th scope="col"
 									class="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-500 uppercase">
-									Role
+									capacity_unit
 								</th>
 								<th scope="col"
 									class="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-500 uppercase">
-									Created at
+									Category
+								</th>
+                                <th scope="col"
+									class="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-500 uppercase">
+									Qty
 								</th>
 								<th scope="col" class="relative px-6 py-3">
 									<span class="sr-only">Edit</span>

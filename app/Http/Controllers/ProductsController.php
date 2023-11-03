@@ -24,10 +24,9 @@ class ProductsController extends Controller
             ->when($term, function ($query, $term) {
                 $query->where('brand', 'LIKE', '%' . $term . '%')
                     ->orWhere('model', 'LIKE', '%' . $term . '%')
-                    ->where('color', 'LIKE', '%' . $term . '%');
+                    ->orwhere('color', 'LIKE', '%' . $term . '%');
             })
             ->paginate(50);
-        // return $products;
         return Inertia::render('Products/Index', compact('products'));
     }
 
