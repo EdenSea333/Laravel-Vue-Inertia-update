@@ -115,7 +115,7 @@
 								</td>
 								<td class="px-6 py-4 whitespace-nowrap">
 									<div class="text-sm text-center text-gray-900">
-										{{ user.email }}
+										<a :href="'mailto:' + user.email">{{ user.email }}</a>
 									</div>
 								</td>
 								<td class="px-6 py-4 whitespace-nowrap">

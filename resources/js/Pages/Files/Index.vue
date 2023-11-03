@@ -121,11 +121,10 @@
 								</td>
 								
 								<td class="px-6 py-4 text-sm font-medium text-right whitespace-nowrap">
-
-									<inertia-link :href="`/stocks/${file.id}/update`"
-										class="float-left px-4 py-2 text-white bg-blue-900 duration-100 rounded hover:text-green-600">
-										MATCH</inertia-link>
-
+									<div class="text-sm font-medium text-gray-900">
+										<inertia-link class="float-left px-4 py-2 ml-2 text-white bg-blue-900 duration-100 rounded hover:text-red-600"
+											:href="`files/${file.id}`">MATCH</inertia-link>
+									</div>
 								</td>
 							</tr>
 						</tbody>
@@ -159,11 +158,6 @@ export default {
 			if (confirm(message)) {
 				callback();
 			}
-		},
-		deleteProduct: function (product) {
-			this.confirmAction('Are you sure you want to delete proudct?', function () {
-				this.$inertia.delete(route('products.destroy', product.id));
-			}.bind(this));
 		},
 		search() {
 			this.$inertia.replace(this.route('products.index', { term: this.term }))

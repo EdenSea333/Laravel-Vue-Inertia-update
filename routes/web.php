@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MatchingListController;
 use App\Http\Controllers\ProductsController;
 use App\Http\Controllers\StocksController;
 use App\Http\Controllers\FilesController;
@@ -24,6 +25,7 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::resource('/roles', RoleController::class);
     Route::resource('/stocks', StocksController::class);
     Route::resource('/files', FilesController::class);
+    Route::resource('/matchinglist', MatchingListController::class);
     Route::get('/file/user', [FilesController::class, 'getFilesByUser'])->name('files.user');
     Route::get('/file/mine', [FilesController::class, 'getMyFiles'])->name('files.mine');
     Route::post('/file/upload', [FilesController::class, 'uploadFile'])->name('files.upload');

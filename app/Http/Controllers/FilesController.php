@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ProductStoreRequest;
 use App\Models\Files;
 use App\Imports\StockList;
+use App\Models\MatchingList;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -23,7 +24,6 @@ class FilesController extends Controller
         $term = $request->input('term');
         $files = Files::with('user')
             ->paginate(50);
-        ray($files);
         // return $products;
         return Inertia::render('Files/Index', compact('files'));
     }
@@ -60,13 +60,13 @@ class FilesController extends Controller
                 return $row[1] != null;
             }));
 
-        $products = Product::all()->toArray();
+        $products = Product::all()->toarray();
 
-        $mapping_list = [];
+        $matching_list = [];
         foreach($rows as $ix => $row){
             foreach($products as $product){
                 if (strstr($row['product'], $product['brand']) && strstr($row['product'], $product['model']) && strstr($row['product'], $product['color']) ) {// && strstr( $row['product'], $product['capacity']) && strstr($row['product'], $product['capacity_unit'])
-                    $mapping_list[] =  [
+                    $matching_list[] =  [
                         "id" => $row['no'],
                         "product" => $product['brand'] . ' ' . $product['model'] . ' ' . $product['color']
                     ];
@@ -75,23 +75,31 @@ class FilesController extends Controller
                 }
             }
         }
-        return Inertia::render('Files/Show', compact('rows', 'file'));
+        $products = Product::paginate(10);
+        $current_page = $products->currentPage();
+        if($current_page > 1){
+            $matchDialogVisible = true;
+        }
+        else{
+            $matchDialogVisible = false;
+        }
+        return Inertia::render('Files/Show', compact('rows', 'file', 'products', 'matchDialogVisible'));
     }
     
-    public function destroy(string $id)
-    {
+    // public function destroy(string $id)
+    // {
         // Product::destroy($id);
 
         // return back()->with('delete', 'Product has been deleted!');
-    }
+    // }
 
-    public function deleteMultiple(Request $request)
-    {
+    // public function deleteMultiple(Request $request)
+    // {
         // $productIds = $request->input('ids');
         // Product::whereIn('id', $productIds)->delete();
 
         // return redirect()->route('products.index')->with('success', 'Operation successfully!');
-    }
+    // }
 
     public function getFilesByUserID($id) {
         return Files::where('user_id', $id)->paginate(50);

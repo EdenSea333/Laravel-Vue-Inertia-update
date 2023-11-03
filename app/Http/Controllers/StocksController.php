@@ -3,9 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Files;
+use App\Models\Stock;
+use App\Imports\StockList;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Arr;
 use Inertia\Inertia;
 
 class StocksController extends Controller
@@ -79,9 +85,51 @@ class StocksController extends Controller
     //  */
      public function update(Request $request, string $id)
     {
-        File::where('id', $id)->update($request->all());
+        $file = Files::findOrFail($id);
+        $filePath = storage_path('app/public/excel_files/'.$file->file_name);
+        $rows = Excel::toArray(new StockList(), $filePath)[0];
+        $header = [
+            "#", "Product", "Grade", "Vat Type", "Qty", "Offer", "Total"
+        ];
+        $offset = array_search(Arr::first($rows, function($row) {
+            return $row[0] == "#" &&
+                $row[1] == "Product" &&
+                $row[2] == "Grade" &&
+                $row[3] == "Vat Type" &&
+                $row[4] == "Qty" &&
+                $row[5] == "Offer" &&
+                $row[6] == "Total";
+        }), $rows);
+        $rows = array_map(fn($row) => [
+                "no" => $row[0],
+                "product" => $row[1],
+                "grade" => $row[2],
+                "vat_type" => $row[3],
+                "qty" => $row[4],
+                "offer" => $row[5],
+                "mapped" => ''
+            ], array_filter(array_slice($rows, $offset + 1), function($row) {
+                return $row[1] != null;
+            }));
 
-        return redirect('/stocks')->with('success', 'User has been updated!');
+        $products = Product::all()->toArray();
+        $mapping_list = [];
+        foreach($rows as $ix => $row){
+            foreach($products as $product){
+                if (strstr($row['product'], $product['brand']) && strstr($row['product'], $product['model']) && strstr($row['product'], $product['color']) ) {// && strstr( $row['product'], $product['capacity']) && strstr($row['product'], $product['capacity_unit'])
+                    $mapping_list[] =  [
+                        "id" => $product['id'],
+                        "quantity" => $row['qty']
+                    ];
+                    $rows[$ix]['mapped'] = $product['brand'] . ' ' . $product['model'] . ' ' . $product['color'];
+                    break;
+                }
+            }
+        }
+        foreach($mapping_list as $data) {
+            
+        }
+        return redirect('/stocks')->with('success', 'File has been matched!');
     }
 
     // /**
