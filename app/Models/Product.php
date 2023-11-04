@@ -10,6 +10,11 @@ class Product extends Model
     use HasFactory;
     protected $guarded = [];
 
+    public function stocks()
+    {
+        return $this->hasOne(Stock::class);
+    }
+
     public function capacityUnit()
     {
         return $this->belongsTo(CapacityUnit::class, 'capacity_unit');

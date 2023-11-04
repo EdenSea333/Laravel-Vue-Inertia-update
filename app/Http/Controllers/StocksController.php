@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Files;
 use App\Models\Stock;
+use App\Models\MatchingList;
 use App\Imports\StockList;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -22,68 +23,17 @@ class StocksController extends Controller
     public function index(Request $request)
     {
         $term = $request->input('term');
-
-        $users = User::with('role')
+        $stocksList = Stock::with('product')
             ->when($term, function ($query, $term) {
                 $query->where('name', 'LIKE', '%' . $term . '%')
                     ->orWhere('email', 'LIKE', '%' . $term . '%');
             })
-            ->latest()
-            ->paginate(5);
-
-        return Inertia::render('Stocks/Index', compact('users'));
+            ->paginate(20);
+        return Inertia::render('Stocks/Index', compact('stocksList'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    // public function create()
-    // {
-    //     return Inertia::render('Users/Create');
-    // }
-
-    // /**
-    //  * Store a newly created resource in storage.
-    //  */
-    // public function store(UserStoreRequest $request)
-    // {
-    //     $validatedData = $request->validated();
-
-    //     if ($request->hasFile('avatar')) {
-    //         $avatarPath = $request->file('avatar')->store('public/avatars');
-    //         $validatedData['avatar'] = Storage::url($avatarPath);
-    //     }
-
-    //     $validatedData['password'] = Hash::make($validatedData['password']);
-    //     User::create($validatedData);
-
-    //     return redirect()->route('users.index')->with('success', 'User has been created!');
-    // }
-
-    // /**
-    //  * Display the specified resource.
-    //  */
-    // public function show(string $id)
-    // {
-    //     $getUser = User::findOrFail($id);
-
-    //     return Inertia::render('Users/Show', compact('getUser'));
-    // }
-
-    // /**
-    //  * Show the form for editing the specified resource.
-    //  */
-    // public function edit(string $id)
-    // {
-    //     $user = User::findOrFail($id);
-
-    //     return Inertia::render('Users/Edit', compact('user'));
-    // }
-
-    // /**
-    //  * Update the specified resource in storage.
-    //  */
-     public function update(Request $request, string $id)
+    
+    public function update(Request $request, string $id)
     {
         $file = Files::findOrFail($id);
         $filePath = storage_path('app/public/excel_files/'.$file->file_name);
@@ -113,23 +63,51 @@ class StocksController extends Controller
             }));
 
         $products = Product::all()->toArray();
-        $mapping_list = [];
+        $stock_list = [];
         foreach($rows as $ix => $row){
-            foreach($products as $product){
-                if (strstr($row['product'], $product['brand']) && strstr($row['product'], $product['model']) && strstr($row['product'], $product['color']) ) {// && strstr( $row['product'], $product['capacity']) && strstr($row['product'], $product['capacity_unit'])
-                    $mapping_list[] =  [
-                        "id" => $product['id'],
-                        "quantity" => $row['qty']
-                    ];
-                    $rows[$ix]['mapped'] = $product['brand'] . ' ' . $product['model'] . ' ' . $product['color'];
-                    break;
+            $stock = [];
+            $data = MatchingList::where('name', 'like', '%'.$row['product'].'%')->first();
+            if($data != null){
+                // dd($data['product_id']);
+                $product_id=$data['product_id'];
+                $stock = [
+                    'product_id' => $product_id,
+                    'quantity' => $row['qty']
+                ];
+            }
+            else
+                foreach($products as $product){
+                    if (strstr($row['product'], $product['brand']) && strstr($row['product'], $product['model']) && strstr($row['product'], $product['color']) ) {// && strstr( $row['product'], $product['capacity']) && strstr($row['product'], $product['capacity_unit'])
+                        $stock = [
+                            'product_id' => $product['id'],
+                            'quantity' => $row['qty']
+                        ];
+                        break;
+                    }
+                }
+            array_push($stock_list, $stock);
+        }
+        foreach($stock_list as $stock){
+            if($stock != null){
+                $data_stock=Stock::where('product_id', "=", $stock['product_id'] )->first();
+                if($data_stock == null){
+                    $final_stock_list = new Stock();
+                    $final_stock_list -> product_id = $stock['product_id'];
+                    $final_stock_list -> quantity = intval($stock['quantity']);
+                    $final_stock_list -> save();
+                }
+                else{
+                    $data_stock->quantity += intval($stock['quantity']);
+                    $data_stock->save();
                 }
             }
-        }
-        foreach($mapping_list as $data) {
             
         }
-        return redirect('/stocks')->with('success', 'File has been matched!');
+
+        $result_stock_list=Stock::all();
+        // return redirect('/stocks', compact($result_stock_list))->with('success', 'File has been matched!');
+        // return Inertia::render()->with('success', 'File has been matched!');
+
     }
 
     // /**

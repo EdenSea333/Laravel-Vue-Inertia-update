@@ -19,7 +19,6 @@ class ProductsController extends Controller
     public function index(Request $request)
     {
         $term = $request->input('term');
-        ray("ok1");
         $products = Product::with('capacityUnit', 'category')
             ->when($term, function ($query, $term) {
                 $query->where('brand', 'LIKE', '%' . $term . '%')
@@ -27,6 +26,7 @@ class ProductsController extends Controller
                     ->orwhere('color', 'LIKE', '%' . $term . '%');
             })
             ->paginate(50);
+
         return Inertia::render('Products/Index', compact('products'));
     }
 

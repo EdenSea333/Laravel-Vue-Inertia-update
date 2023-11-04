@@ -85,8 +85,8 @@
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
-                                    <button class="fa-solid fa-screwdriver-wrench" style="color: green" 
-                                        @click=" select_product(row.product)"></button>
+                                    <a :href="route('matchinglist.select', {product: encodeURIComponent(row.product)})" class="fa-solid fa-screwdriver-wrench" style="color: green" >
+                                    </a>
                                 </td>
                             </tr>
                         </tbody>
@@ -106,6 +106,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import DialogModal from '@/Components/DialogModal.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import SecondaryButton from '@/Components/SecondaryButton.vue';
+import { Link } from '@inertiajs/vue3';
 
 export default {
     components: {
@@ -137,10 +138,6 @@ export default {
             if (confirm(message)) {
                 callback();
             }
-        },
-        save: function(supply_product_name){
-            console.log('######################', supply_product_name);
-            this.$inertia.put(this.route('matchinglist.update', this.selectedProducts, supply_product_name))
         },
         computed: {
             console: () => console,

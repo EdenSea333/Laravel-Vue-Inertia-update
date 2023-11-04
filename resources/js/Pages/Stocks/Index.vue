@@ -7,15 +7,6 @@
 					Stocks
 					<i class="fa-solid fa-list-check"></i>
 				</p>
-                <label class="px-4 py-2 mr-3 text-sm text-green-600 transition border border-green-300 rounded-full hover:bg-green-600 hover:text-white hover:border-transparent" for="upload">Upload Stock</label>
-                <input class="hidden"
-                 type="file" id="upload" v-on:change="form.stock = $event.target.files[0]">
-				<!-- <inertia-link href="users/create">
-					<a
-						class="px-4 py-2 mr-3 text-sm text-green-600 transition border border-green-300 rounded-full hover:bg-green-600 hover:text-white hover:border-transparent">Add
-						Stock</a>
-				</inertia-link> -->
-
 			</h2>
 		</template>
 
@@ -23,16 +14,6 @@
 
 			<div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
 				<div class="overflow-hidden bg-white shadow-xl sm:rounded-lg">
-
-					<a href="#" @click="deleteSelectedUsers"
-						class="float-left px-4 py-2 mt-3 text-red-400 duration-100 rounded hover:text-red-600">
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-6 h-6">
-							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" stroke="currentColor"
-								fill="none"
-								d="M3 6h18M6 6l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 4v-1a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1" />
-						</svg>
-					</a>
-
 					<div class="flex justify-end mt-3">
 						<div class="mb-3 xl:w-96">
 							<div class="relative flex items-stretch w-4/5 mb-3 input-group">
@@ -71,7 +52,7 @@
 									class="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-500 uppercase">
 									Colour
 								</th>
-								<th scope="col"
+								<!-- <th scope="col"
 									class="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-500 uppercase">
 									capacity
 								</th>
@@ -82,7 +63,7 @@
 								<th scope="col"
 									class="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-500 uppercase">
 									Category
-								</th>
+								</th> -->
                                 <th scope="col"
 									class="px-6 py-3 text-xs font-medium tracking-wider text-center text-gray-500 uppercase">
 									Qty
@@ -93,52 +74,54 @@
 							</tr>
 						</thead>
 						<tbody class="bg-white divide-y divide-gray-200">
-							<tr v-for="user in users.data" :key="user.id">
+							<tr v-for="stock in stocksList.data" :key="stock.id">
 								<td>
-									<input type="checkbox" v-model="selectedUsers" :value="user.id"
-										class="ml-5 outline-none" />
+									<!-- <input type="checkbox" v-model="selectedUsers" :value="user.id" -->
+										<!-- class="ml-5 outline-none" /> -->
 								</td>
 								<td class="px-6 py-4 whitespace-nowrap">
 									<div class="text-sm text-center text-gray-900">
-										{{ user.id }}
+                                        {{ stock.product.brand }}
 									</div>
-								</td>
-								<td>
-									<img class="w-10 h-10 mx-auto rounded-full"
-										:src="user.avatar != 'placeholder' ? user.avatar : $page.props.avatar"
-										alt="User profile image">
 								</td>
 								<td class="px-6 py-4 whitespace-nowrap">
 									<div class="flex items-center justify-center">
-
 										<div class="ml-4">
 											<div class="text-sm font-medium text-gray-900">
-												<inertia-link class="transition hover:text-blue-500"
-													:href="`users/${user.id}`">{{ user.name }}</inertia-link>
+                                                {{ stock.product.model }}
 											</div>
 										</div>
 									</div>
 								</td>
 								<td class="px-6 py-4 whitespace-nowrap">
 									<div class="text-sm text-center text-gray-900">
-										<a :href="'mailto:' + user.email">{{ user.email }}</a>
+                                        {{ stock.product.color }}
 									</div>
 								</td>
-								<td class="px-6 py-4 whitespace-nowrap">
+								<!-- <td class="px-6 py-4 whitespace-nowrap">
 									<div class="text-sm text-center text-gray-900">
-										{{ user.role ? user.role.name : 'Not available' }}
+                                        {{ stock.product.capacity }}
+									</div>
+								</td> -->
+								<!-- <td class="px-6 py-4 text-center whitespace-nowrap">
+                                    <div class="text-sm text-center text-gray-900">
+                                        {{ stock.product.capacity_unit }}
 									</div>
 								</td>
-								<td class="px-6 py-4 text-center whitespace-nowrap">
-									<span
-										class="inline-flex px-2 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full">
-										{{ user.formatted_created_at }}
-									</span>
+                                <td class="px-6 py-4 text-center whitespace-nowrap">
+                                    <div class="text-sm text-center text-gray-900">
+                                        {{ stock.product.category }}
+									</div>
+								</td> -->
+                                <td class="px-6 py-4 text-center whitespace-nowrap">
+                                    <div class="text-sm text-center text-gray-900">
+                                        {{ stock.quantity }}
+									</div>
 								</td>
 							</tr>
 						</tbody>
 					</table>
-					<Pagination class="mt-6" :links="users.links" />
+                    <Pagination class="mt-6" :links="stocksList.links" />
 				</div>
 			</div>
 		</div>
@@ -154,7 +137,7 @@ export default {
 		Pagination
 	},
 	props: {
-		users: Object
+        stocksList: Object,
 	},
 	data() {
 		return {
@@ -177,6 +160,7 @@ export default {
 			}.bind(this));
 		},
 		search() {
+            console.log(this.stocksList);
 			this.$inertia.replace(this.route('users.index', { term: this.term }))
 		},
 		async deleteSelectedUsers() {

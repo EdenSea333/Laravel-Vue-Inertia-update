@@ -59,31 +59,28 @@ class FilesController extends Controller
             ], array_filter(array_slice($rows, $offset + 1), function($row) {
                 return $row[1] != null;
             }));
-
         $products = Product::all()->toarray();
-
         $matching_list = [];
+        
         foreach($rows as $ix => $row){
-            foreach($products as $product){
-                if (strstr($row['product'], $product['brand']) && strstr($row['product'], $product['model']) && strstr($row['product'], $product['color']) ) {// && strstr( $row['product'], $product['capacity']) && strstr($row['product'], $product['capacity_unit'])
-                    $matching_list[] =  [
-                        "id" => $row['no'],
-                        "product" => $product['brand'] . ' ' . $product['model'] . ' ' . $product['color']
-                    ];
-                    $rows[$ix]['mapped'] = $product['brand'] . ' ' . $product['model'] . ' ' . $product['color'];
-                    break;
-                }
+            $data = MatchingList::where('name', 'like', '%'.$row['product'].'%')->first();
+            if($data != null){
+                // dd($data['product_id']);
+                $product_id=$data['product_id'];
+                $data = Product::find($product_id);
+                $rows[$ix]['mapped'] = $data['brand'] . ' ' . $data['model'] . ' ' . $data['color'];
             }
+            else
+                foreach($products as $product){
+                    if (strstr($row['product'], $product['brand']) && strstr($row['product'], $product['model']) && strstr($row['product'], $product['color']) ) {// && strstr( $row['product'], $product['capacity']) && strstr($row['product'], $product['capacity_unit'])
+                        $rows[$ix]['mapped'] = $product['brand'] . ' ' . $product['model'] . ' ' . $product['color'];
+                        break;
+                    }
+                }
         }
-        $products = Product::paginate(10);
-        $current_page = $products->currentPage();
-        if($current_page > 1){
-            $matchDialogVisible = true;
-        }
-        else{
-            $matchDialogVisible = false;
-        }
-        return Inertia::render('Files/Show', compact('rows', 'file', 'products', 'matchDialogVisible'));
+       
+
+        return Inertia::render('Files/Show', compact('rows', 'file'));
     }
     
     // public function destroy(string $id)

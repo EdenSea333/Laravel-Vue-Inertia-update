@@ -27,6 +27,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
     Route::resource('/stocks', StocksController::class);
     Route::resource('/files', FilesController::class);
     Route::resource('/matchinglist', MatchingListController::class);
+    Route::get('/matching/select/{product}', [MatchingListController::class, 'showSelectPage'])->where('product', '.*')->name('matchinglist.select');
+    Route::post('/matching/save', [MatchingListController::class, 'saveMacthingInformation'])->name('matching.save');
     Route::get('/file/user', [FilesController::class, 'getFilesByUser'])->name('files.user');
     Route::get('/file/mine', [FilesController::class, 'getMyFiles'])->name('files.mine');
     Route::post('/file/upload', [FilesController::class, 'uploadFile'])->name('files.upload');
